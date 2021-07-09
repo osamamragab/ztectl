@@ -7,10 +7,10 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
 
-ZTE_DOMAIN = "http://192.168.1.1"
+ZTE_DOMAIN = os.getenv("ZTE_DOMAIN", "http://192.168.1.1")
 ZTE_USERNAME = os.getenv("ZTE_USERNAME", "admin")
 ZTE_PASSWORD = os.getenv("ZTE_PASSWORD", "")
-ZTE_MACS_FILE = os.getenv("ZTE_MACS_FILE", "mac.csv")
+ZTE_MACS_FILE = os.getenv("ZTE_MACS_FILE", "macs.csv")
 
 
 def panic(msg: str):
