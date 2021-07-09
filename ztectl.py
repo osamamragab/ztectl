@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 
 
+DEV_MODE = os.getenv("DEV_MODE", "0") == "1"
 ZTE_DOMAIN = os.getenv("ZTE_DOMAIN", "http://192.168.1.1")
 ZTE_USERNAME = os.getenv("ZTE_USERNAME", "admin")
 ZTE_PASSWORD = os.getenv("ZTE_PASSWORD", "")
@@ -36,7 +37,7 @@ elif len(macaddr) != 12:
         panic("the given mac address is not valid")
 
 opts = webdriver.FirefoxOptions()
-opts.headless = False
+opts.headless = not DEV_MODE
 
 with webdriver.Firefox(options=opts, service_log_path="/dev/null") as driver:
     driver.get(ZTE_DOMAIN)
@@ -46,10 +47,12 @@ with webdriver.Firefox(options=opts, service_log_path="/dev/null") as driver:
     wait.until(presence_of_element_located((By.ID, "mmNet"))).click()
     wait.until(presence_of_element_located((By.ID, "smWLAN"))).click()
     wait.until(presence_of_element_located((By.ID, "ssmMacFilter"))).click()
+
     Select(
         wait.until(presence_of_element_located((By.ID, "Frm_Mode")))
     ).select_by_value("Ban")
 
     for i, m in enumerate(macaddr.split(":")):
         driver.find_element_by_id("mac" + str(i + 1)).send_keys(m)
+
     driver.find_element_by_id("add").click()
