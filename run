@@ -1,0 +1,19 @@
+#!/bin/sh
+
+cd "$(dirname "$(readlink -f "$0")")" || exit 1
+
+if command -v pipenv >/dev/null 2>&1; then
+  pipenv run python3 ztectl.py "$@"
+  exit $?
+elif ! command -v python3 >/dev/null 2>&1; then
+  echo "python3 is not installed" >&2
+  exit 1
+fi
+
+if [ -r .env ]; then
+  # shellcheck disable=SC2046
+  env $(grep -v '^#' .env | xargs) python3 ztectl.py "$@"
+  exit $?
+fi
+
+python3 ztectl.py "$@"
